@@ -1,4 +1,4 @@
-package com.n3p7un3.computerurllauncher.NetworkCom;
+package com.n3p7un3.computerurllauncher;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -19,7 +19,6 @@ import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import android.content.Context;
 import android.util.Log;
 
 
@@ -54,7 +53,7 @@ public class NetworkCommunicator {
 		_lstMaster = new NetworkComListener() {
 
 			@Override
-			public void fireEvent(com.n3p7un3.computerurllauncher.NetworkCom.NetworkEvent ne) {
+			public void fireEvent(com.n3p7un3.computerurllauncher.NetworkEvent ne) {
 				// TODO Auto-generated method stub
 				for (NetworkComListener temp : _listeners)
 				{
@@ -68,7 +67,7 @@ public class NetworkCommunicator {
 		NetworkComListener _localListener = new NetworkComListener() {
 
 			@Override
-			public void fireEvent(com.n3p7un3.computerurllauncher.NetworkCom.NetworkEvent ne) {
+			public void fireEvent(com.n3p7un3.computerurllauncher.NetworkEvent ne) {
 				// TODO Auto-generated method stub
 				NetworkEvent(ne);
 				
@@ -110,6 +109,7 @@ public class NetworkCommunicator {
 		_clientConnectThread.start();
 	}
 	
+	@SuppressWarnings("unused")
 	private void KillThread(Thread thread)
 	{
 		if (thread != null)

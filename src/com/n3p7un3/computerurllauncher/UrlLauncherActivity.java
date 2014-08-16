@@ -10,7 +10,7 @@ public class UrlLauncherActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		//setContentView(R.layout.activity_computer_receiver_settings);
-		
+		//Toast.makeText(getApplicationContext(), "fdafs", Toast.LENGTH_LONG).show();
 		Intent intent = getIntent();
 		
 		UrlLauncher theLauncher = new UrlLauncher(getApplicationContext());
@@ -19,7 +19,7 @@ public class UrlLauncherActivity extends Activity {
 		if (result == "")
 			Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
 		else
-			Toast.makeText(getApplicationContext(), "Failed: " + result, Toast.LENGTH_LONG);
+			Toast.makeText(getApplicationContext(), "Failed: " + result, Toast.LENGTH_LONG).show();
 		
 		//finished();
 	}

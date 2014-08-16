@@ -2,6 +2,9 @@ package com.n3p7un3.computerurllauncher;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+
+import com.example.computerurllauncher.R;
 
 public class UrlLauncher {
 	
@@ -15,14 +18,13 @@ public class UrlLauncher {
 	
 	public String SendUrl(String url)
 	{
-		SharedPreferences prefs = mContext.getSharedPreferences("com.n3p7un3.computerurllauncher.PREFERENCES_KEY", Context.MODE_PRIVATE);
-		
+		SharedPreferences prefs = mContext.getSharedPreferences("com.n3p7un3.computerurllauncher.prefs", Context.MODE_MULTI_PROCESS);
 		
 		String serverAddr = prefs.getString("serverAddress", "");
 		if (serverAddr == "")
 			return "Server address not set.";
 		
-		int serverPort = prefs.getInt("serverPort", -1);
+		int serverPort = Integer.parseInt(prefs.getString("serverPort", "-1"));
 		if (serverPort == -1)
 			return "Server port is invalid or not specified";
 		

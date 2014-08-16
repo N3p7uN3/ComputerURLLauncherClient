@@ -1,9 +1,6 @@
 package com.n3p7un3.computerurllauncher;
 
-import com.n3p7un3.computerurllauncher.NetworkCom.NetworkCommunicator;
-import com.n3p7un3.computerurllauncher.NetworkCom.NetworkEvent;
-import com.n3p7un3.computerurllauncher.NetworkCom.NetworkEventType;
-import com.n3p7un3.computerurllauncher.NetworkCom.NetworkCommunicator.NetworkComListener;
+import com.n3p7un3.computerurllauncher.NetworkCommunicator.NetworkComListener;
 
 public class UrlLauncherComProtocol {
 
@@ -103,6 +100,11 @@ public class UrlLauncherComProtocol {
 	
 	private void DoneWaiting()
 	{
-		mActionTimeout.notifyAll();
+		try {
+			mActionTimeout.notifyAll();
+		} catch (IllegalMonitorStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

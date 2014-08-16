@@ -1,4 +1,4 @@
-package com.n3p7un3.computerurllauncher.NetworkCom;
+package com.n3p7un3.computerurllauncher;
 
 public enum NetworkEventType
 {

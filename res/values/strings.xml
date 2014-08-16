@@ -4,5 +4,6 @@
     <string name="app_name">ComputerURLLauncher</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="sharedPreferencesValue">com.n3p7un3.computerurllauncher.prefs</string>
 
 </resources>
