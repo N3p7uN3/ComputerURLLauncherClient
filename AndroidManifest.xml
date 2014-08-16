@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.computerurllauncher"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="18" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity android:name="com.n3p7un3.computerurllauncher.UrlLauncherActivity" android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter android:label="Launch URL on computer" android:logo="@drawable/ic_launcher" android:icon="@drawable/ic_launcher">
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/url"/>
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
