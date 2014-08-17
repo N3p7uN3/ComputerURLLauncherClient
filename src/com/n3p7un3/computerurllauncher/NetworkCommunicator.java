@@ -335,6 +335,7 @@ public class NetworkCommunicator {
 		public void SendPacket(String packet)
 		{
 			_packetQueue.add(packet);
+			Log.w("com.n3p7un3.computerurllauncher", "adding packet: " + packet);
 			try {
 				_packetReadyWait.notifyAll();
 			} catch (java.lang.IllegalMonitorStateException e) {
@@ -351,26 +352,31 @@ public class NetworkCommunicator {
 				{
 					String poll, packet;
 					
-					poll = _packetQueue.poll();
-					if ((poll != null) && (!poll.equals("")))
-					{
-						packet = poll + _endOfPacketChar;
-						
-						Log.w("debugging", "attempting to send: " + packet);
-						
-						_out.print(packet);
-						//_out.flush();
-						
-						//Log.w("debugging", "got past output");
-						if (_out.checkError())
+					try {
+						poll = _packetQueue.poll();
+						if ((poll != null) && (!poll.equals("")))
 						{
-							Log.w("debugging", "WARNING: _out error");
-							//Thread.currentThread().interrupt();
-							_lstMaster.fireEvent(new NetworkEvent(NetworkEventType.ComFailureDisconnecting, "Lost connection."));
-							break;
-						} else {
-							_lstMaster.fireEvent(new NetworkEvent(NetworkEventType.PacketSendSuccess, poll));
+							packet = poll + _endOfPacketChar;
+							
+							Log.w("debugging", "attempting to send: " + packet);
+							
+							_out.print(packet);
+							//_out.flush();
+							
+							//Log.w("debugging", "got past output");
+							if (_out.checkError())
+							{
+								Log.w("debugging", "WARNING: _out error");
+								//Thread.currentThread().interrupt();
+								_lstMaster.fireEvent(new NetworkEvent(NetworkEventType.ComFailureDisconnecting, "Lost connection."));
+								break;
+							} else {
+								_lstMaster.fireEvent(new NetworkEvent(NetworkEventType.PacketSendSuccess, poll));
+							}
 						}
+					} catch (java.util.NoSuchElementException e2) {
+						// TODO Auto-generated catch block
+						//e.printStackTrace();
 					}
 				}
 				/*

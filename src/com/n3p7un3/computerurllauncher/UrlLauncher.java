@@ -1,5 +1,7 @@
 package com.n3p7un3.computerurllauncher;
 
+import android.util.Log;
+
 public class UrlLauncher {
 	
 	private Thread mLauncherThread;
@@ -11,7 +13,7 @@ public class UrlLauncher {
 	
 	private class UrlLauncherThread implements Runnable
 	{
-		private volatile String mUrl;
+		private String mUrl;
 		private volatile String mServerAddr;
 		private volatile int mServerPort;
 		
@@ -20,6 +22,7 @@ public class UrlLauncher {
 			mUrl = url;
 			mServerAddr = serverAddress;
 			mServerPort = serverPort;
+			
 		}
 		
 		public void run()

@@ -16,11 +16,13 @@ public class UrlLauncherComProtocol {
 	private boolean mConnectedSuccess;
 	private boolean mSuccessSuccess;
 	private Object mActionTimeout;
+	private Object mSuccessTimeout;
 	
 	public UrlLauncherComProtocol(String url, String serverAddress, int serverPort)
 	{
 		mServerAddr = serverAddress;
 		mServerPort = serverPort;
+		mUrl = url;
 		
 		mCom = new NetworkCommunicator();
 		mCom.AddNetworkEventListener(new NetworkComListener() {
@@ -36,7 +38,7 @@ public class UrlLauncherComProtocol {
 		mConnectedSuccess = false;
 		mSuccessSuccess = false;
 		mActionTimeout = new Object();
-		
+		mSuccessTimeout = new Object();
 		
 		
 	
@@ -46,28 +48,39 @@ public class UrlLauncherComProtocol {
 	{
 		//Attempt to start the connection
 		mCom.AttemptConnect(mServerAddr, mServerPort);
-		Wait(1000);
+		Log.w("com.n3p7un3.computerurllauncher", "attempt connection " + mServerAddr + ":" + Integer.toString(mServerPort));
+		Wait(mActionTimeout, 1000);
 		
 		if (!mConnectedSuccess)
 		{
 			Log.w("com.n3p7un3.computerurllauncher", "Could not connect");
+			Done();
 			return false;
 		}
 		
 		//If got here, connection success.
+		Log.w("com.n3p7un3.computerurllauncher", "got before sending packet: " + mUrl);
 		mCom.SendPacket(mUrl);
-		Wait(1000);
+		Wait(mSuccessTimeout, 3000);
 		
 		if (!mSuccessSuccess)
 		{
 			Log.w("com.n3p7un3.computerurllauncher", "Did not succeed");
+			Done();
 			return false;
 		}
 		
 		//If got here, received a success packet
-		mCom.Disconnect("We're done here.");
+		//mCom.Disconnect("We're done here.");
+		Done();
 		return true;
 		
+	}
+	
+	private void Done()
+	{
+		mCom.Disconnect("");
+		Wait(mActionTimeout, 1000);
 	}
 	
 	private void NetworkComEvent(NetworkEvent ne)
@@ -77,17 +90,17 @@ public class UrlLauncherComProtocol {
 			case Connected:
 				mConnectedSuccess = true;
 				Log.w("com.n3p7un3.computerurllauncher", "connected");
-				DoneWaiting();
+				DoneWaiting(mActionTimeout);
 				break;
 			case ComFailureDisconnecting:
-				Log.w("com.n3p7un3.computerurllauncher", "could not connect");
-				DoneWaiting();
+				Log.w("com.n3p7un3.computerurllauncher", "disconnected: " + ne.Data);
+				DoneWaiting(mActionTimeout);
 				break;
 			
 			case PacketReceived:
 				ParsePacket(ne.Data);
-				Log.w("com.n3p7un3.computerurllauncher", "Received okay");
-				DoneWaiting();
+				//Log.w("com.n3p7un3.computerurllauncher", "Received okay");
+				//DoneWaiting();
 				break;
 		}
 	}
@@ -97,15 +110,16 @@ public class UrlLauncherComProtocol {
 		if (packet.equals("success"))
 		{
 			mSuccessSuccess = true;
-			DoneWaiting();
+			Log.w("com.n3p7un3.computerurllauncher", "received success");
+			DoneWaiting(mSuccessTimeout);
 		}
 	}
 	
-	private void Wait(int milliseconds)
+	private void Wait(Object waitObject, int milliseconds)
 	{
-		synchronized(mActionTimeout) {
+		synchronized(waitObject) {
 			try {
-				mActionTimeout.wait(milliseconds);
+				waitObject.wait(milliseconds);
 			} catch (InterruptedException e)
 			{
 				//nothing
@@ -113,10 +127,10 @@ public class UrlLauncherComProtocol {
 		}
 	}
 	
-	private void DoneWaiting()
+	private void DoneWaiting(Object waitObject)
 	{
 		try {
-			mActionTimeout.notifyAll();
+			waitObject.notifyAll();
 		} catch (IllegalMonitorStateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
