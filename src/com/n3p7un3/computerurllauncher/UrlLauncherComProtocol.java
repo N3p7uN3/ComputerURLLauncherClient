@@ -1,5 +1,8 @@
 package com.n3p7un3.computerurllauncher;
 
+import android.os.Debug;
+import android.util.Log;
+
 import com.n3p7un3.computerurllauncher.NetworkCommunicator.NetworkComListener;
 
 public class UrlLauncherComProtocol {
@@ -14,7 +17,7 @@ public class UrlLauncherComProtocol {
 	private boolean mSuccessSuccess;
 	private Object mActionTimeout;
 	
-	public UrlLauncherComProtocol(String serverAddress, int serverPort, String url)
+	public UrlLauncherComProtocol(String url, String serverAddress, int serverPort)
 	{
 		mServerAddr = serverAddress;
 		mServerPort = serverPort;
@@ -43,17 +46,23 @@ public class UrlLauncherComProtocol {
 	{
 		//Attempt to start the connection
 		mCom.AttemptConnect(mServerAddr, mServerPort);
-		Wait(2000);
+		Wait(1000);
 		
 		if (!mConnectedSuccess)
+		{
+			Log.w("com.n3p7un3.computerurllauncher", "Could not connect");
 			return false;
+		}
 		
 		//If got here, connection success.
 		mCom.SendPacket(mUrl);
 		Wait(1000);
 		
 		if (!mSuccessSuccess)
+		{
+			Log.w("com.n3p7un3.computerurllauncher", "Did not succeed");
 			return false;
+		}
 		
 		//If got here, received a success packet
 		mCom.Disconnect("We're done here.");
@@ -67,12 +76,18 @@ public class UrlLauncherComProtocol {
 		{
 			case Connected:
 				mConnectedSuccess = true;
+				Log.w("com.n3p7un3.computerurllauncher", "connected");
+				DoneWaiting();
+				break;
 			case ComFailureDisconnecting:
+				Log.w("com.n3p7un3.computerurllauncher", "could not connect");
 				DoneWaiting();
 				break;
 			
 			case PacketReceived:
 				ParsePacket(ne.Data);
+				Log.w("com.n3p7un3.computerurllauncher", "Received okay");
+				DoneWaiting();
 				break;
 		}
 	}

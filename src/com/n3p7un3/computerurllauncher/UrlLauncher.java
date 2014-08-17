@@ -1,47 +1,32 @@
 package com.n3p7un3.computerurllauncher;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-
-import com.example.computerurllauncher.R;
-
 public class UrlLauncher {
 	
+	private Thread mLauncherThread;
 	
-	private Context mContext;
-
-	public UrlLauncher(Context context)
+	public UrlLauncher(String url, String serverAddress, int serverPort)
 	{
-		mContext = context;
+		new Thread(new UrlLauncherThread(url, serverAddress, serverPort)).start();
 	}
 	
-	public String SendUrl(String url)
+	private class UrlLauncherThread implements Runnable
 	{
-		SharedPreferences prefs = mContext.getSharedPreferences("com.n3p7un3.computerurllauncher.prefs", Context.MODE_MULTI_PROCESS);
+		private volatile String mUrl;
+		private volatile String mServerAddr;
+		private volatile int mServerPort;
 		
-		String serverAddr = prefs.getString("serverAddress", "");
-		if (serverAddr == "")
-			return "Server address not set.";
+		public UrlLauncherThread(String url, String serverAddress, int serverPort)
+		{
+			mUrl = url;
+			mServerAddr = serverAddress;
+			mServerPort = serverPort;
+		}
 		
-		int serverPort = Integer.parseInt(prefs.getString("serverPort", "-1"));
-		if (serverPort == -1)
-			return "Server port is invalid or not specified";
-		
-		UrlLauncherComProtocol theLauncher = new UrlLauncherComProtocol(serverAddr, serverPort, url);
-		boolean result = theLauncher.Go();
-		
-		if (result)
-			return "";
-		else
-			return "Communication failed.";
-		
-		
-	
+		public void run()
+		{
+			UrlLauncherComProtocol com = new UrlLauncherComProtocol(mUrl, mServerAddr, mServerPort);
+			com.Go();
+		}
 	}
-
-	
-	
-	
 	
 }
