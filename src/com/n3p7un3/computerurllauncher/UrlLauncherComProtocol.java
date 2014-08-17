@@ -1,15 +1,18 @@
 package com.n3p7un3.computerurllauncher;
 
-import android.os.Debug;
 import android.util.Log;
 
-import com.n3p7un3.computerurllauncher.NetworkCommunicator.NetworkComListener;
+import com.n3p7un3.networkcommunicatorclient.NetworkCommunicator;
+import com.n3p7un3.networkcommunicatorclient.NetworkCommunicator.NetworkComListener;
+import com.n3p7un3.networkcommunicatorclient.NetworkEvent;
+
 
 public class UrlLauncherComProtocol {
 
 	private String mServerAddr;
 	private int mServerPort;
 	private String mUrl;
+	
 	
 	private NetworkCommunicator mCom;
 	
